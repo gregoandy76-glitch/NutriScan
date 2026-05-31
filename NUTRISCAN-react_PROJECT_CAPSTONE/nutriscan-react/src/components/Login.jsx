@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import MathCaptcha from './MathCaptcha';
 
 export default function Login({ setAuthModal, onLoginSuccess }) {
+    const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001';
     const [form, setForm] = useState({ name: '', email: '', password: '' });
     const [captchaValid, setCaptchaValid] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -16,7 +17,7 @@ export default function Login({ setAuthModal, onLoginSuccess }) {
         setLoading(true);
         setError('');
         try {
-            const res = await fetch('http://localhost:5000/api/auth/login', {
+            const res = await fetch(`${apiBaseUrl}/api/auth/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email: form.email, password: form.password }),

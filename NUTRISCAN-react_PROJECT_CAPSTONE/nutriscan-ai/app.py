@@ -5,8 +5,8 @@ import cv2
 import numpy as np
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-import tensorflow as tf
-from tensorflow.keras.layers import Dense
+import keras
+from keras.layers import Dense, Lambda, InputLayer
 import google.generativeai as genai
 from PIL import Image
 from dotenv import load_dotenv
@@ -52,6 +52,21 @@ class SafeDense(Dense):
         config.pop("quantization_config", None)
         return super().from_config(config)
 
+
+class SafeInputLayer(InputLayer):
+    def __init__(self, *args, **kwargs):
+        if "batch_shape" in kwargs and "batch_input_shape" not in kwargs:
+            kwargs["batch_input_shape"] = kwargs.pop("batch_shape")
+        kwargs.pop("optional", None)
+        super().__init__(*args, **kwargs)
+
+
+class SafeLambda(Lambda):
+    @classmethod
+    def from_config(cls, config):
+        config.setdefault("function_type", "python")
+        return super().from_config(config)
+
 # =========================
 # LOAD MODEL MOBILENET
 # =========================
@@ -66,9 +81,13 @@ mobilenet_model = None
 if os.path.exists(MODEL_PATH):
     try:
         print(f"📦 Loading model dari: {MODEL_PATH}")
-        mobilenet_model = tf.keras.models.load_model(
+        mobilenet_model = keras.models.load_model(
             MODEL_PATH,
-            custom_objects={"Dense": SafeDense},
+            custom_objects={
+                "Dense": SafeDense,
+                "InputLayer": SafeInputLayer,
+                "Lambda": SafeLambda
+            },
             compile=False,
             safe_mode=False
         )

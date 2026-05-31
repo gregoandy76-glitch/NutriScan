@@ -12,6 +12,7 @@ import ScanKamera from './pages/ScanKamera';
 import Dashboard from './pages/Dashboard';
 
 export default function App() {
+  const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001';
   const [page, setPage] = useState('beranda');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [authModal, setAuthModal] = useState(null); // 'login' | 'register' | null
@@ -32,7 +33,7 @@ export default function App() {
   useEffect(() => {
     const token = localStorage.getItem('nutriscan_token');
     if (!token) return;
-    fetch('http://localhost:5000/api/user/profile', {
+    fetch(`${apiBaseUrl}/api/user/profile`, {
       headers: { Authorization: `Bearer ${token}` }
     })
       .then(r => r.ok ? r.json() : Promise.reject())
