@@ -54,3 +54,6 @@ Thumbs.db
 # Backend (nutriscan-backend)
 # =========================
 *.log
+
+# Model folder lama
+nutriscan-ai/models/
