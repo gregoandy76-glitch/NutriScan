@@ -5,17 +5,44 @@ export default function Beranda({ handleFeatureAccess, isLoggedIn, userName }) {
         <main className="container mx-auto max-w-5xl px-4 py-10 sm:py-12 animate-fade-in text-left">
 
             {isLoggedIn ? (
-                <div className="mb-16">
-                    <div className="bg-gradient-to-r from-emerald-600 to-teal-600 p-6 sm:p-8 rounded-3xl shadow-lg shadow-emerald-100 text-white relative overflow-hidden">
-                        <div className="absolute right-0 bottom-0 opacity-10 text-9xl pointer-events-none translate-x-10 translate-y-10">🥗</div>
-                        <span className="bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">Smart Nutrition Scanner</span>
-                        <h1 className="text-2xl sm:text-3xl md:text-4xl font-black tracking-tight mt-3">Selamat Datang, {userName || 'User'}! 👋</h1>
-                        <p className="text-emerald-50/80 text-sm mt-2 max-w-xl leading-relaxed">
-                            Sistem Smart Nutrition Scanner siap membantumu menganalisis tabel nutrisi kemasan. Mari jaga kesehatan tubuh dengan melacak dan membatasi akumulasi konsumsi gula dan garam harianmu mulai sekarang!
-                        </p>
-                        <div className="mt-6 flex flex-wrap gap-3">
-                            <button onClick={() => handleFeatureAccess('scan')} className="btn-lift bg-white text-emerald-700 font-bold px-5 py-2.5 rounded-xl text-xs shadow-sm hover:bg-emerald-50 cursor-pointer">📤 Unggah Label Baru</button>
-                            <button onClick={() => handleFeatureAccess('dashboard')} className="btn-lift bg-emerald-700/40 text-white font-bold px-5 py-2.5 rounded-xl text-xs border border-white/20 hover:bg-emerald-700/60 cursor-pointer">📈 Lihat Grafik Akumulasi</button>
+                <div className="mb-20 mt-4">
+                    <div className="bg-[#0f8c5b] p-6 sm:p-12 rounded-[2rem] text-white relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-8 shadow-xl">
+                        
+                        {/* Kolom Kiri: Teks */}
+                        <div className="md:w-3/5 z-10 w-full">
+                            <span className="bg-white/20 backdrop-blur-md px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider border border-white/20">
+                                Smart Nutrition Scanner
+                            </span>
+                            <h1 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight mt-6 mb-4">
+                                Selamat Datang, {userName || 'User'}! <span className="inline-block">👋</span>
+                            </h1>
+                            <p className="text-emerald-50 text-sm leading-relaxed mb-8 max-w-lg font-medium opacity-90">
+                                Sistem Smart Nutrition Scanner siap membantumu menganalisis tabel nutrisi kemasan. Mari jaga kesehatan tubuh dengan melacak dan membatasi akumulasi konsumsi gula dan garam harianmu mulai sekarang!
+                            </p>
+                            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full">
+                                <button onClick={() => handleFeatureAccess('scan')} className="btn-lift w-full sm:w-auto bg-white text-emerald-800 font-bold px-6 py-3.5 rounded-xl text-xs shadow-md hover:bg-emerald-50 cursor-pointer flex justify-center items-center gap-2">
+                                    <span className="text-sm">📤</span> Unggah Label Baru
+                                </button>
+                                <button onClick={() => handleFeatureAccess('dashboard')} className="btn-lift w-full sm:w-auto bg-[#0d754b] text-white font-bold px-6 py-3.5 rounded-xl text-xs hover:bg-[#0b633f] cursor-pointer transition flex justify-center items-center gap-2 border border-[#12a169]">
+                                    <span className="text-sm">📈</span> Lihat Grafik Akumulasi
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Kolom Kanan: Gambar Ilustrasi */}
+                        <div className="md:w-2/5 flex justify-center md:justify-end z-10 relative w-full">
+                            <img 
+                                src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=600&auto=format&fit=crop" 
+                                alt="Dashboard Tablet Ilustrasi" 
+                                className="w-full max-w-[320px] rounded-2xl shadow-2xl rotate-[-2deg] hover:rotate-0 transition-transform duration-500 border-[6px] border-black/80"
+                            />
+                            {/* Dekorasi Glow */}
+                            <div className="absolute inset-0 bg-emerald-400/20 blur-[80px] rounded-full -z-10 scale-150"></div>
+                        </div>
+
+                        {/* Background Decoration Murni */}
+                        <div className="absolute right-0 top-0 opacity-[0.03] text-[20rem] pointer-events-none translate-x-1/4 -translate-y-1/4 leading-none">
+                            🍽️
                         </div>
                     </div>
                 </div>
@@ -49,23 +76,25 @@ export default function Beranda({ handleFeatureAccess, isLoggedIn, userName }) {
             )}
 
             {/* SEKSI ALUR KERJA */}
-            <div className="mb-20 bg-white border border-slate-100 rounded-3xl p-6 sm:p-8 shadow-xs">
-                <div className="text-center mb-10">
-                    <h2 className="text-xl sm:text-2xl font-black text-slate-900">💡 Alur Analisis Unggah & Deteksi</h2>
-                    <p className="text-slate-400 text-xs mt-1">Hanya butuh 3 langkah instan untuk membaca laporan tubuhmu</p>
+            <div className="mb-24">
+                <div className="text-center mb-12">
+                    <h2 className="text-2xl sm:text-3xl font-black text-slate-800 flex items-center justify-center gap-2">
+                        <span className="text-[#0f8c5b]">💡</span> Alur Analisis Unggah & Deteksi
+                    </h2>
+                    <p className="text-slate-500 text-sm mt-3">Hanya butuh 3 langkah instan untuk membaca laporan tubuhmu</p>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8 text-center">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 lg:gap-10">
                     {[
-                        { icon: '📤', title: '1. Upload / Foto Label', desc: 'Ambil gambar langsung dengan kamera atau unggah file foto nilai gizi dari penyimpanan galeri pribadi Anda.' },
-                        { icon: '✍️', title: '2. Beri Label Nama', desc: 'Ketik identitas merek makanan atau minuman ringan untuk mempermudah pemetaan log riwayat.' },
+                        { icon: '🖼️', title: '1. Upload / Foto Label', desc: 'Ambil gambar langsung dengan kamera atau unggah file foto nilai gizi dari penyimpanan galeri pribadi Anda.' },
+                        { icon: '✏️', title: '2. Beri Label Nama', desc: 'Ketik identitas merek makanan atau minuman ringan untuk mempermudah pemetaan log riwayat.' },
                         { icon: '📊', title: '3. Evaluasi Grafik Harian', desc: 'Pantau akumulasi takaran zat pengawet secara real-time berdasarkan batas ambang anjuran preventif klinis.' },
                     ].map((step, i) => (
-                        <div key={i} className="flex flex-col items-center group">
-                            <div className="w-14 h-14 bg-emerald-50 text-emerald-600 text-xl font-bold rounded-2xl flex items-center justify-center shadow-inner transition-transform duration-300 group-hover:scale-110 group-hover:shadow-md group-hover:bg-emerald-100">
+                        <div key={i} className="bg-white rounded-3xl p-8 sm:p-10 border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] flex flex-col items-center text-center hover:-translate-y-1 transition-transform duration-300">
+                            <div className="w-16 h-16 bg-[#e6f4ef] text-[#0f8c5b] text-2xl rounded-full flex items-center justify-center mb-6">
                                 {step.icon}
                             </div>
-                            <h4 className="font-extrabold text-slate-800 text-sm mt-4 mb-1">{step.title}</h4>
-                            <p className="text-slate-400 text-[11px] px-4 leading-relaxed">{step.desc}</p>
+                            <h4 className="font-bold text-slate-800 text-base mb-3">{step.title}</h4>
+                            <p className="text-slate-500 text-xs leading-relaxed">{step.desc}</p>
                         </div>
                     ))}
                 </div>
@@ -73,58 +102,76 @@ export default function Beranda({ handleFeatureAccess, isLoggedIn, userName }) {
 
             {/* SEKSI KAMUS */}
             <div className="mb-12">
-                <div className="text-center md:text-left mb-8">
-                    <h2 className="text-xl sm:text-2xl font-black text-slate-900">📚 Kamus & Batas Aman Konsumsi Harian</h2>
-                    <p className="text-slate-400 text-xs mt-1">Acuan standar kesehatan resmi berbasis panduan umum dari WHO dan BPOM RI.</p>
+                <div className="text-center md:text-left mb-10 border-t border-slate-200 pt-16 mt-6">
+                    <h2 className="text-2xl sm:text-3xl font-black text-slate-800 flex items-center justify-center md:justify-start gap-2">
+                        <span className="text-[#0f8c5b]">📚</span> Batas Aman Konsumsi Harian
+                    </h2>
+                    <p className="text-slate-500 text-sm mt-2">Acuan standar kesehatan resmi berbasis panduan umum dari WHO dan BPOM RI.</p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
-                    <div className="bg-white border border-slate-100 rounded-3xl p-6 shadow-xs flex flex-col justify-between border-t-4 border-amber-400 hover:shadow-md transition-shadow duration-300">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10">
+                    {/* KARTU GULA */}
+                    <div className="bg-white border border-slate-100 rounded-3xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] flex flex-col justify-between hover:shadow-md transition-shadow duration-300">
                         <div>
-                            <div className="flex justify-between items-center mb-4 flex-wrap gap-2">
-                                <div className="flex items-center gap-2">
-                                    <span className="text-2xl">🍬</span>
-                                    <h3 className="font-extrabold text-slate-900 text-sm md:text-base">Gula & Risiko Diabetes</h3>
+                            <div className="flex justify-between items-center mb-6 flex-wrap gap-2 border-b border-slate-100 pb-4">
+                                <div className="flex items-center gap-2 text-[#0f8c5b]">
+                                    <span className="text-xl">🍬</span>
+                                    <h3 className="font-bold text-slate-800 text-base">Gula & Risiko Diabetes</h3>
                                 </div>
-                                <span className="bg-amber-500 text-white text-[10px] font-black px-2.5 py-1 rounded-md shadow-2xs">MAKS: 50g / HARI</span>
+                                <span className="bg-[#0f8c5b] text-white text-[10px] font-bold px-3 py-1.5 rounded-full shadow-xs">MAKS: 50g / HARI</span>
                             </div>
-                            <ul className="space-y-2.5 text-xs text-slate-600 mb-6">
-                                <li className="flex items-start gap-2"><span className="text-amber-500 mt-0.5">✔</span><span>Konsumsi berlebih memicu <strong>Resistensi Insulin</strong> penyebab Diabetes Melitus Tipe 2.</span></li>
-                                <li className="flex items-start gap-2"><span className="text-amber-500 mt-0.5">✔</span><span>Sering tersembunyi di balik produk minuman botol manis dan camilan kemasan.</span></li>
+                            <ul className="space-y-3.5 text-xs text-slate-500 mb-8 leading-relaxed">
+                                <li className="flex items-start gap-2.5">
+                                    <span className="text-[#0f8c5b] text-[10px] mt-1 bg-[#e6f4ef] rounded-full p-0.5">✔</span>
+                                    <span>Konsumsi berlebih memicu <strong>Resistensi Insulin</strong> penyebab Diabetes Melitus Tipe 2.</span>
+                                </li>
+                                <li className="flex items-start gap-2.5">
+                                    <span className="text-[#0f8c5b] text-[10px] mt-1 bg-[#e6f4ef] rounded-full p-0.5">✔</span>
+                                    <span>Sering tersembunyi di balik produk minuman botol manis dan camilan kemasan.</span>
+                                </li>
                             </ul>
                         </div>
-                        <div className="bg-amber-50/50 p-3.5 rounded-2xl border border-amber-100/70 text-xs">
-                            <div className="flex justify-between items-center mb-1.5 font-bold text-amber-900">
-                                <span>🥄 Setara Takaran Batas Maks:</span>
-                                <span className="text-[11px] text-amber-700 bg-white px-2 py-0.5 rounded-md border border-amber-100">± 12 Sendok Teh</span>
+                        <div className="bg-[#f4f7fb] p-5 rounded-2xl border border-blue-50/50 text-xs">
+                            <div className="flex justify-between items-center mb-3 text-slate-600">
+                                <span>Setara Takaran Batas Maks:</span>
+                                <span className="text-[10px] font-bold text-blue-500 bg-blue-50 px-2.5 py-1 rounded-md">± 12 Sendok Teh</span>
                             </div>
-                            <div className="flex flex-wrap gap-1.5 text-lg mt-1 justify-center bg-white p-2 rounded-xl border border-slate-100">
-                                <span>🥄</span><span>🥄</span><span>🥄</span><span>🥄</span><span>🥄</span><span>🥄</span><span>🥄</span><span>🥄</span><span>🥄</span><span>🥄</span><span>🥄</span><span>🥄</span>
+                            <div className="flex items-center justify-center gap-2 bg-white p-4 rounded-xl border border-slate-100 shadow-xs mt-1">
+                                <span className="text-2xl">🥄</span>
+                                <span className="text-slate-800 font-bold text-base">&times; 12</span>
                             </div>
                         </div>
                     </div>
 
-                    <div className="bg-white border border-slate-100 rounded-3xl p-6 shadow-xs flex flex-col justify-between border-t-4 border-rose-500 hover:shadow-md transition-shadow duration-300">
+                    {/* KARTU NATRIUM */}
+                    <div className="bg-white border border-slate-100 rounded-3xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] flex flex-col justify-between hover:shadow-md transition-shadow duration-300">
                         <div>
-                            <div className="flex justify-between items-center mb-4 flex-wrap gap-2">
-                                <div className="flex items-center gap-2">
-                                    <span className="text-2xl">🧂</span>
-                                    <h3 className="font-extrabold text-slate-900 text-sm md:text-base">Natrium & Risiko Hipertensi</h3>
+                            <div className="flex justify-between items-center mb-6 flex-wrap gap-2 border-b border-slate-100 pb-4">
+                                <div className="flex items-center gap-2 text-[#d13b3b]">
+                                    <span className="text-xl">🧂</span>
+                                    <h3 className="font-bold text-slate-800 text-base">Natrium & Risiko Hipertensi</h3>
                                 </div>
-                                <span className="bg-rose-500 text-white text-[10px] font-black px-2.5 py-1 rounded-md shadow-2xs">MAKS: 2000mg / HARI</span>
+                                <span className="bg-[#d13b3b] text-white text-[10px] font-bold px-3 py-1.5 rounded-full shadow-xs">MAKS: 2000mg / HARI</span>
                             </div>
-                            <ul className="space-y-2.5 text-xs text-slate-600 mb-6">
-                                <li className="flex items-start gap-2"><span className="text-rose-500 mt-0.5">✔</span><span>Kadar Natrium pekat mengikat cairan tubuh dan menaikkan <strong>Tekanan Darah Tinggi</strong>.</span></li>
-                                <li className="flex items-start gap-2"><span className="text-rose-500 mt-0.5">✔</span><span>Banyak terkandung di makanan gurih, mi instan, serta penyedap masakan artifisial.</span></li>
+                            <ul className="space-y-3.5 text-xs text-slate-500 mb-8 leading-relaxed">
+                                <li className="flex items-start gap-2.5">
+                                    <span className="text-[#0f8c5b] text-[10px] mt-1 bg-[#e6f4ef] rounded-full p-0.5">✔</span>
+                                    <span>Kadar Natrium pekat mengikat cairan tubuh dan menaikkan <strong>Tekanan Darah Tinggi</strong>.</span>
+                                </li>
+                                <li className="flex items-start gap-2.5">
+                                    <span className="text-[#0f8c5b] text-[10px] mt-1 bg-[#e6f4ef] rounded-full p-0.5">✔</span>
+                                    <span>Banyak terkandung di makanan gurih, mi instan, serta penyedap masakan artifisial.</span>
+                                </li>
                             </ul>
                         </div>
-                        <div className="bg-rose-50/50 p-3.5 rounded-2xl border border-rose-100/70 text-xs">
-                            <div className="flex justify-between items-center mb-1.5 font-bold text-rose-900">
-                                <span>🧂 Setara Takaran Batas Maks:</span>
-                                <span className="text-[11px] text-rose-700 bg-white px-2 py-0.5 rounded-md border border-rose-100">± 1 Sendok Teh Garam</span>
+                        <div className="bg-[#fff9f9] p-5 rounded-2xl border border-rose-50/50 text-xs">
+                            <div className="flex justify-between items-center mb-3 text-slate-600">
+                                <span>Setara Takaran Batas Maks:</span>
+                                <span className="text-[10px] font-bold text-rose-500 bg-rose-50 px-2.5 py-1 rounded-md">± 1 Sendok Teh Garam</span>
                             </div>
-                            <div className="flex gap-1.5 text-lg mt-1 justify-center bg-white p-2 rounded-xl border border-slate-100">
-                                <span>🥄</span>
+                            <div className="flex items-center justify-center gap-2 bg-white p-4 rounded-xl border border-slate-100 shadow-xs mt-1">
+                                <span className="text-2xl">🥄</span>
+                                <span className="text-slate-800 font-bold text-base">&times; 1</span>
                             </div>
                         </div>
                     </div>

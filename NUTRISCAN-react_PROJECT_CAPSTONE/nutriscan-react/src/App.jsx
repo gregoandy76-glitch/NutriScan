@@ -11,6 +11,35 @@ import Beranda from './pages/Beranda';
 import ScanKamera from './pages/ScanKamera';
 import Dashboard from './pages/Dashboard';
 
+// ===== KOMPONEN TOAST NOTIFICATION LOKAL =====
+function AppToast({ toasts, removeToast }) {
+    const iconMap  = { success: '✅', warning: '⚠️', error: '❌', info: '📡' };
+    const colorMap = {
+        success: 'bg-emerald-600 border-emerald-500',
+        warning: 'bg-amber-500  border-amber-400',
+        error:   'bg-rose-600   border-rose-500',
+        info:    'bg-slate-700  border-slate-600',
+    };
+    return (
+        <div className="fixed top-4 right-4 z-[999] flex flex-col gap-2 pointer-events-none">
+            {toasts.map(t => (
+                <div
+                    key={t.id}
+                    className={`flex items-start gap-3 text-white text-xs font-medium px-4 py-3 rounded-2xl shadow-xl border pointer-events-auto max-w-xs animate-fade-in ${colorMap[t.type]}`}
+                    style={{ minWidth: '240px' }}
+                >
+                    <span className="text-base shrink-0 mt-0.5">{iconMap[t.type]}</span>
+                    <div className="flex-1 leading-relaxed">{t.message}</div>
+                    <button
+                        onClick={() => removeToast(t.id)}
+                        className="shrink-0 opacity-60 hover:opacity-100 text-white font-bold text-sm leading-none cursor-pointer ml-1"
+                    >✕</button>
+                </div>
+            ))}
+        </div>
+    );
+}
+
 export default function App() {
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001';
   const [page, setPage] = useState('beranda');
@@ -22,6 +51,14 @@ export default function App() {
   const [scanHistory, setScanHistory] = useState([]);
   const [showPrivacyModal, setShowPrivacyModal] = useState(false);
   const [ocrData, setOcrData] = useState(null); // Data nutrisi real dari Gemini OCR
+
+  const [toasts, setToasts] = useState([]);
+  const showToast = (message, type = 'info') => {
+      const id = Date.now() + Math.random();
+      setToasts(prev => [...prev, { id, message, type }]);
+      setTimeout(() => setToasts(prev => prev.filter(t => t.id !== id)), 4000);
+  };
+  const removeToast = (id) => setToasts(prev => prev.filter(t => t.id !== id));
 
   const [userName, setUserName] = useState('');
   const [userEmail, setUserEmail] = useState('');
@@ -86,7 +123,7 @@ export default function App() {
 
   const handleAnalysis = () => {
     if (!productName) {
-      alert("Masukkan nama produk terlebih dahulu!");
+      showToast("Masukkan nama produk terlebih dahulu!", 'warning');
       return;
     }
     setCurrentProduct(productName);
@@ -127,7 +164,7 @@ export default function App() {
     setScanHistory([]);
     setUserName('');
     setUserEmail('');
-    alert("Anda telah keluar. Riwayat sesi Anda telah diamankan.");
+    showToast("Anda telah keluar. Riwayat sesi Anda telah diamankan.", 'success');
   };
 
   const hariIni = new Date().toLocaleDateString('id-ID');
@@ -140,6 +177,8 @@ export default function App() {
     .reduce((sum, item) => sum + parseInt(item.garam), 0);
 
   return (
+    <>
+    <AppToast toasts={toasts} removeToast={removeToast} />
     <div className="bg-slate-50 text-slate-800 font-sans min-h-screen antialiased flex flex-col justify-between">
       <div>
         <Navbar
@@ -161,7 +200,7 @@ export default function App() {
         )}
 
         {page === 'dashboard' && isLoggedIn && (
-          <Dashboard currentProduct={currentProduct} totalGulaHariIni={totalGulaHariIni} totalGaramHariIni={totalGaramHariIni} scanHistory={scanHistory} setPage={setPage} />
+          <Dashboard currentProduct={currentProduct} totalGulaHariIni={totalGulaHariIni} totalGaramHariIni={totalGaramHariIni} scanHistory={scanHistory} setPage={setPage} userName={userName} />
         )}
       </div>
 
@@ -198,5 +237,6 @@ export default function App() {
 
       <Footer />
     </div>
+    </>
   );
 }

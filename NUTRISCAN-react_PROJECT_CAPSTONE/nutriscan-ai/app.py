@@ -4,6 +4,8 @@ import logging
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from dotenv import load_dotenv
+import base64
+import cv2
 
 # Suppress TF warnings — harus di-set SEBELUM import TF
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
@@ -89,25 +91,104 @@ def process_nutrition_label():
 
         # 3. Kirim hasil potongan gambar ke Gemini untuk ekstraksi teks OCR
         hasil_json, error_msg = extract_nutrition_info(gemini_client, cropped_np)
+
+        # 4. Ubah gambar potongan (Numpy BGR/RGB) menjadi Base64 untuk ditampilkan di Frontend
+        try:
+            # Pastikan konversi ke BGR sebelum encode ke JPG jika image_rgb dari process_image_bytes adalah RGB
+            # Jika cropped_np formatnya RGB:
+            cropped_bgr = cv2.cvtColor(cropped_np, cv2.COLOR_RGB2BGR)
+            _, buffer = cv2.imencode('.jpg', cropped_bgr)
+            cropped_b64 = "data:image/jpeg;base64," + base64.b64encode(buffer).decode('utf-8')
+        except Exception as e:
+            print(f"[OCR] Warning: Gagal mengkonversi gambar cropped ke base64: {e}")
+            cropped_b64 = None
+
         if error_msg:
-            # Jika Gemini bermasalah, tetap kembalikan koordinat Bounding Box
+            # Jika Gemini bermasalah, tetap kembalikan koordinat Bounding Box dan gambar
             print(f"[OCR] Gemini warning: {error_msg}")
             return jsonify({
                 "success": True,
                 "warning": f"OCR Gagal: {error_msg}",
-                "bbox": bbox
+                "bbox": bbox,
+                "cropped_image": cropped_b64
             }), 200
 
-        # Sukses — kembalikan data koordinat potong dan teks nilai gizi
+        # Sukses — kembalikan data koordinat potong, teks nilai gizi, dan gambar
         print(f"[OCR] Sukses! Data: {hasil_json}")
         return jsonify({
             "success": True,
             "data": hasil_json,
-            "bbox": bbox
+            "bbox": bbox,
+            "cropped_image": cropped_b64
         }), 200
 
     except Exception as e:
         return jsonify({"success": False, "error": f"Internal Server Error: {str(e)}"}), 500
+
+
+# =========================
+# API HEALTH MESSAGE (Gemini)
+# =========================
+
+@app.route("/api/health-message", methods=["POST"])
+def generate_health_message():
+    """
+    Format pesan tetap (fixed), Gemini hanya generate kata mutiara < 7 kata.
+    Response: { message: str, quote: str }
+    """
+    data        = request.get_json() or {}
+    total_garam = data.get("total_garam", 0)
+    total_gula  = data.get("total_gula",  0)
+    user_name   = data.get("user_name",   "Kamu")
+    batas_garam = 2000  # mg — Kemenkes RI
+    batas_gula  = 50    # g  — Kemenkes RI
+
+    # Bangun daftar nutrisi yang melebihi batas
+    pelanggaran = []
+    if total_garam > batas_garam:
+        pelanggaran.append(f"natrium sebesar {total_garam}mg")
+    if total_gula > batas_gula:
+        pelanggaran.append(f"gula sebesar {total_gula}g")
+
+    if not pelanggaran:
+        return jsonify({"success": True, "message": "Konsumsi harianmu masih aman.", "quote": "Sehat itu pilihan terbaik!"}), 200
+
+    # Format pesan utama — FIXED (bukan AI)
+    if len(pelanggaran) == 1:
+        nutrisi_str = pelanggaran[0]
+    else:
+        nutrisi_str = " dan ".join(pelanggaran)
+
+    pesan_utama = (
+        f"Hai {user_name}, hari ini kamu sudah mengonsumsi {nutrisi_str} "
+        f"melewati ketentuan Kemenkes RI."
+    )
+
+    # Gemini hanya generate kata mutiara < 7 kata
+    fallback_quote = "Jaga tubuhmu, jaga masa depanmu."
+    try:
+        if gemini_client is None:
+            raise ValueError("Gemini tidak tersedia")
+
+        prompt = (
+            "Buat 1 kata-kata mutiara motivasi kesehatan dalam Bahasa Indonesia. "
+            "Syarat: kurang dari 7 kata, tidak menggunakan tanda petik, "
+            "tidak ada tanda baca berlebihan, langsung tulis kata-katanya saja."
+        )
+        response = gemini_client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=[prompt]
+        )
+        quote = response.text.strip().strip('"').strip("'")
+        # Pastikan tidak lebih dari 7 kata
+        if len(quote.split()) > 7:
+            quote = " ".join(quote.split()[:7])
+    except Exception as e:
+        print(f"[health-message] Gemini error: {e}")
+        quote = fallback_quote
+
+    return jsonify({"success": True, "message": pesan_utama, "quote": quote}), 200
+
 
 
 # =========================
