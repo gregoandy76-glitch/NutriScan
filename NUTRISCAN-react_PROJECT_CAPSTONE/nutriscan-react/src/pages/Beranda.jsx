@@ -32,9 +32,9 @@ export default function Beranda({ handleFeatureAccess, isLoggedIn, userName }) {
                         {/* Kolom Kanan: Gambar Ilustrasi */}
                         <div className="md:w-2/5 flex justify-center md:justify-end z-10 relative w-full mt-4 md:mt-0">
                             <img 
-                                src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=600&auto=format&fit=crop" 
-                                alt="Dashboard Tablet Ilustrasi" 
-                                className="w-full max-w-[260px] sm:max-w-[280px] md:max-w-[320px] rounded-2xl shadow-2xl rotate-0 md:rotate-[-2deg] hover:rotate-0 transition-transform duration-500 border-[4px] md:border-[6px] border-black/80"
+                                src="https://images.unsplash.com/photo-1490645935967-10de6ba17061?q=80&w=600&auto=format&fit=crop" 
+                                alt="Ilustrasi Makanan Sehat dan Sayuran" 
+                                className="w-full max-w-[240px] sm:max-w-[280px] md:max-w-[320px] rotate-0 md:rotate-[3deg] hover:rotate-0 transition-transform duration-500 rounded-3xl shadow-xl border-4 border-white/20"
                             />
                             {/* Dekorasi Glow */}
                             <div className="absolute inset-0 bg-emerald-400/20 blur-[80px] rounded-full -z-10 scale-150"></div>
