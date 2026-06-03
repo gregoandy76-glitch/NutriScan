@@ -78,8 +78,8 @@ export default function Dashboard({ currentProduct, totalGulaHariIni, totalGaram
                     <div>
                         <h3 className="font-bold text-slate-800 text-base flex justify-between items-center flex-wrap gap-2">
                             🧂 Kandungan Garam
-                            <span className={`text-xs px-2 py-0.5 rounded font-bold ${garamProdukIni > 2000 ? 'bg-rose-600 text-white' : 'bg-rose-100 text-rose-800'}`}>
-                                {garamProdukIni > 2000 ? '🚨 TINGGI' : '✅ NORMAL'}
+                            <span className={`text-xs px-2 py-0.5 rounded font-bold ${garamProdukIni > 600 ? 'bg-rose-600 text-white' : 'bg-emerald-100 text-emerald-800'}`}>
+                                {garamProdukIni > 600 ? '🚨 TINGGI' : '✅ NORMAL'}
                             </span>
                         </h3>
                         <div className="my-6 text-center bg-rose-50/50 py-3 rounded-xl">

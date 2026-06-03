@@ -21,6 +21,7 @@ export default function App() {
   const [currentProduct, setCurrentProduct] = useState('Memuat nama produk...');
   const [scanHistory, setScanHistory] = useState([]);
   const [showPrivacyModal, setShowPrivacyModal] = useState(false);
+  const [ocrData, setOcrData] = useState(null); // Data nutrisi real dari Gemini OCR
 
   const [userName, setUserName] = useState('');
   const [userEmail, setUserEmail] = useState('');
@@ -90,8 +91,16 @@ export default function App() {
     }
     setCurrentProduct(productName);
 
+    // Gunakan data OCR real dari Gemini jika tersedia, fallback ke 0 jika belum scan
+    const kandunganPerSajian = ocrData?.kandungan_per_sajian;
+    const gulaRaw  = kandunganPerSajian?.gula_g  ?? null;
+    const garamRaw = kandunganPerSajian?.garam_mg ?? null;
+
+    const gulaStr  = gulaRaw  !== null ? `${gulaRaw}g`   : '0g';
+    const garamStr = garamRaw !== null ? `${garamRaw}mg` : '0mg';
+
     const updatedHistory = [
-      { name: productName, date: new Date().toLocaleDateString('id-ID'), gula: '12g', garam: '1500mg' },
+      { name: productName, date: new Date().toLocaleDateString('id-ID'), gula: gulaStr, garam: garamStr },
       ...scanHistory
     ];
 
@@ -99,6 +108,7 @@ export default function App() {
     const userUniqueKey = `scanHistory_${userEmail}`;
     localStorage.setItem(userUniqueKey, JSON.stringify(updatedHistory));
 
+    setOcrData(null); // Reset OCR setelah analisis
     setPage('dashboard');
     setProductName('');
   };
@@ -147,7 +157,7 @@ export default function App() {
         )}
 
         {page === 'scan' && isLoggedIn && (
-          <ScanKamera productName={productName} setProductName={setProductName} handleAnalysis={handleAnalysis} videoRef={videoRef} setShowPrivacyModal={setShowPrivacyModal} fileInputRef={fileInputRef} />
+          <ScanKamera productName={productName} setProductName={setProductName} handleAnalysis={handleAnalysis} videoRef={videoRef} setShowPrivacyModal={setShowPrivacyModal} fileInputRef={fileInputRef} setOcrData={setOcrData} />
         )}
 
         {page === 'dashboard' && isLoggedIn && (

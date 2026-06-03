@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 const OCR_API_URL = "http://localhost:5000/api/ocr";
 
-export default function ScanKamera({ productName, setProductName, handleAnalysis, videoRef, setShowPrivacyModal, fileInputRef }) {
+export default function ScanKamera({ productName, setProductName, handleAnalysis, videoRef, setShowPrivacyModal, fileInputRef, setOcrData }) {
 
     const [isLoading, setIsLoading] = useState(false);
     const [ocrResult, setOcrResult] = useState(null);
@@ -54,13 +54,21 @@ export default function ScanKamera({ productName, setProductName, handleAnalysis
             });
 
             const result = await response.json();
+            console.log("[OCR] Raw response:", result);
 
             if (result.success && result.data) {
+                // ✅ Kasus 1: Sukses — data nutrisi berhasil diekstrak
                 setOcrResult(result.data);
+                setOcrData(result.data); // Kirim ke App.jsx agar handleAnalysis bisa pakai nilai real
                 alert("✅ OCR berhasil! Hasil telah diekstrak dari gambar label nutrisi.");
                 console.log("OCR Result:", result.data);
+            } else if (result.success && result.warning) {
+                // ⚠️ Kasus 2: Model berhasil crop, tapi Gemini gagal baca teks
+                console.warn("[OCR] Gemini warning:", result.warning);
+                alert(`⚠️ Gambar berhasil dipindai, namun teks nutrisi gagal dibaca AI:\n${result.warning}\n\nCoba foto ulang dengan pencahayaan lebih baik.`);
             } else {
-                alert(`⚠️ OCR gagal: ${result.error || "Unknown error"}`);
+                // ❌ Kasus 3: Error dari Flask
+                alert(`❌ OCR gagal: ${result.error || "Server tidak mengembalikan data yang valid"}`);
             }
         } catch (error) {
             console.error("OCR Error:", error);

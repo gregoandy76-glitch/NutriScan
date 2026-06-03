@@ -91,6 +91,7 @@ def process_nutrition_label():
         hasil_json, error_msg = extract_nutrition_info(gemini_client, cropped_np)
         if error_msg:
             # Jika Gemini bermasalah, tetap kembalikan koordinat Bounding Box
+            print(f"[OCR] Gemini warning: {error_msg}")
             return jsonify({
                 "success": True,
                 "warning": f"OCR Gagal: {error_msg}",
@@ -98,6 +99,7 @@ def process_nutrition_label():
             }), 200
 
         # Sukses — kembalikan data koordinat potong dan teks nilai gizi
+        print(f"[OCR] Sukses! Data: {hasil_json}")
         return jsonify({
             "success": True,
             "data": hasil_json,
