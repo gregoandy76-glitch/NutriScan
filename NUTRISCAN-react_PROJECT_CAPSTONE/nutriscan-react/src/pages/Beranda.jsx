@@ -9,14 +9,14 @@ export default function Beranda({ handleFeatureAccess, isLoggedIn, userName }) {
                     <div className="bg-[#0f8c5b] p-6 sm:p-12 rounded-[2rem] text-white relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-8 shadow-xl">
                         
                         {/* Kolom Kiri: Teks */}
-                        <div className="md:w-3/5 z-10 w-full">
-                            <span className="bg-white/20 backdrop-blur-md px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider border border-white/20">
+                        <div className="md:w-3/5 z-10 w-full flex flex-col items-center text-center md:items-start md:text-left">
+                            <span className="bg-white/20 backdrop-blur-md px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider border border-white/20 inline-block mb-2">
                                 Smart Nutrition Scanner
                             </span>
-                            <h1 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight mt-6 mb-4">
-                                Selamat Datang, {userName || 'User'}! <span className="inline-block">👋</span>
+                            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black tracking-tight mt-4 mb-4">
+                                Selamat Datang, {userName || 'User'}! 👋
                             </h1>
-                            <p className="text-emerald-50 text-sm leading-relaxed mb-8 max-w-lg font-medium opacity-90">
+                            <p className="text-emerald-50 text-xs sm:text-sm leading-relaxed mb-8 max-w-lg font-medium opacity-90">
                                 Sistem Smart Nutrition Scanner siap membantumu menganalisis tabel nutrisi kemasan. Mari jaga kesehatan tubuh dengan melacak dan membatasi akumulasi konsumsi gula dan garam harianmu mulai sekarang!
                             </p>
                             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full">
@@ -30,11 +30,11 @@ export default function Beranda({ handleFeatureAccess, isLoggedIn, userName }) {
                         </div>
 
                         {/* Kolom Kanan: Gambar Ilustrasi */}
-                        <div className="md:w-2/5 flex justify-center md:justify-end z-10 relative w-full">
+                        <div className="md:w-2/5 flex justify-center md:justify-end z-10 relative w-full mt-4 md:mt-0">
                             <img 
                                 src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=600&auto=format&fit=crop" 
                                 alt="Dashboard Tablet Ilustrasi" 
-                                className="w-full max-w-[320px] rounded-2xl shadow-2xl rotate-[-2deg] hover:rotate-0 transition-transform duration-500 border-[6px] border-black/80"
+                                className="w-full max-w-[260px] sm:max-w-[280px] md:max-w-[320px] rounded-2xl shadow-2xl rotate-0 md:rotate-[-2deg] hover:rotate-0 transition-transform duration-500 border-[4px] md:border-[6px] border-black/80"
                             />
                             {/* Dekorasi Glow */}
                             <div className="absolute inset-0 bg-emerald-400/20 blur-[80px] rounded-full -z-10 scale-150"></div>
