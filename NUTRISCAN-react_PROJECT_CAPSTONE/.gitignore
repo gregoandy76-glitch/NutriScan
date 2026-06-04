@@ -1,5 +1,57 @@
+# ===========================
+# FILE SENSITIF
+# ===========================
 .env
 **/.env
+.env.local
+**/.env.local
+
+# ===========================
+# PYTHON (nutriscan-ai)
+# ===========================
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+*.keras
+*.h5
+*.pkl
+*.model
+venv/
+.venv/
+**/venv/
+**/.venv/
+
+# Upload folder sementara
+uploads/
+**/uploads/
+
+# ===========================
+# NODE.JS (nutriscan-backend & nutriscan-react)
+# ===========================
 node_modules/
 **/node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+
+# ===========================
+# VITE / REACT BUILD
+# ===========================
 **/.vite/
+**/dist/
+**/build/
+
+# ===========================
+# SISTEM OPERASI
+# ===========================
+.DS_Store
+Thumbs.db
+desktop.ini
