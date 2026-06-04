@@ -8,14 +8,14 @@ def get_gemini_client():
     """Inisialisasi Client Google GenAI menggunakan API Key terbaru"""
     GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
     if not GOOGLE_API_KEY:
-        print("⚠️  WARNING: GOOGLE_API_KEY tidak ditemukan di file .env")
+        print("[WARNING] GOOGLE_API_KEY tidak ditemukan di file .env")
         return None
     try:
         client = genai.Client(api_key=GOOGLE_API_KEY)
-        print("✅ Gemini Client berhasil dikonfigurasi")
+        print("[OK] Gemini Client berhasil dikonfigurasi")
         return client
     except Exception as e:
-        print(f"⚠️  Gemini config error: {e}")
+        print(f"[WARNING] Gemini config error: {e}")
         return None
 
 def extract_nutrition_info(gemini_client, cropped_image_np):

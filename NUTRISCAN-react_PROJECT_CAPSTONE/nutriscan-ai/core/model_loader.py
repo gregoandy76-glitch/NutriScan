@@ -1,15 +1,24 @@
 import os
+import io
+import json
+import zipfile
+import shutil
+import tempfile
 import keras
 from keras.layers import Dense, InputLayer, Layer
 
-# PERHATIKAN: Kita sudah menghapus baris TF_USE_LEGACY_KERAS
-# karena model ini terbukti buatan Keras 3.
 
 class SafeDense(Dense):
+    """Dense dengan __init__ dan from_config yang toleran terhadap quantization_config."""
+    def __init__(self, *args, **kwargs):
+        kwargs.pop("quantization_config", None)
+        super().__init__(*args, **kwargs)
+
     @classmethod
     def from_config(cls, config):
         config.pop("quantization_config", None)
         return super().from_config(config)
+
 
 class SafeInputLayer(InputLayer):
     def __init__(self, *args, **kwargs):
@@ -18,51 +27,105 @@ class SafeInputLayer(InputLayer):
         kwargs.pop("optional", None)
         super().__init__(*args, **kwargs)
 
-# Pelindung utama kita: Layer Dummy untuk membuang Lambda bytecode yang rusak
+
 class SafeLambda(Layer):
+    """Layer dummy untuk membuang Lambda bytecode lama yang tidak kompatibel."""
     def __init__(self, **kwargs):
-        # Buang semua konfigurasi bawaan model .h5 yang bikin crash
-        kwargs.pop("function", None)
-        kwargs.pop("function_type", None)
-        kwargs.pop("arguments", None)
-        kwargs.pop("output_shape", None)
-        kwargs.pop("output_shape_type", None)
+        for key in ["function", "function_type", "arguments", "output_shape", "output_shape_type"]:
+            kwargs.pop(key, None)
         super().__init__(**kwargs)
 
     def call(self, inputs):
-        # Meneruskan data tanpa mengeksekusi fungsi lambda lama
         return inputs
-        
+
     @classmethod
     def from_config(cls, config):
         for key in ["function", "function_type", "arguments", "output_shape", "output_shape_type"]:
             config.pop(key, None)
         return cls(**config)
 
-def load_mobile_model(model_path):
+
+CUSTOM_OBJECTS = {
+    "Dense": SafeDense,
+    "InputLayer": SafeInputLayer,
+    "Lambda": SafeLambda,
+}
+
+
+def _patch_keras_zip(src_path: str, dst_path: str):
     """
-    Memuat model MobileNet .h5 di Keras 3 dengan custom objects yang aman.
+    Buka file .keras (format ZIP), patch semua config.json di dalamnya
+    dengan membuang field 'quantization_config', lalu tulis ke dst_path.
     """
-    if os.path.exists(model_path):
-        try:
-            print(f"📦 Sedang memuat model Keras 3 dari: {model_path} ...")
-            
-            # Kembali menggunakan keras murni (bukan tf.keras)
+    with zipfile.ZipFile(src_path, 'r') as zin:
+        buf = io.BytesIO()
+        with zipfile.ZipFile(buf, 'w', zipfile.ZIP_DEFLATED) as zout:
+            for name in zin.namelist():
+                data = zin.read(name)
+                if name.endswith('.json'):
+                    try:
+                        cfg = json.loads(data.decode('utf-8'))
+                        _strip_key(cfg, 'quantization_config')
+                        data = json.dumps(cfg).encode('utf-8')
+                    except Exception:
+                        pass  # biarkan data asli jika parse gagal
+                zout.writestr(name, data)
+
+    with open(dst_path, 'wb') as f:
+        f.write(buf.getvalue())
+
+
+def _strip_key(obj, key):
+    """Hapus key tertentu secara rekursif dari semua dict di dalam struktur JSON."""
+    if isinstance(obj, dict):
+        obj.pop(key, None)
+        for v in obj.values():
+            _strip_key(v, key)
+    elif isinstance(obj, list):
+        for item in obj:
+            _strip_key(item, key)
+
+
+def load_mobile_model(model_path: str):
+    """
+    Memuat model MobileNet .keras dengan dua strategi:
+    1. Load langsung dengan SafeDense custom_objects
+    2. Patch ZIP/JSON model lalu load ulang
+    """
+    if not os.path.exists(model_path):
+        print(f"[ERROR] File model tidak ditemukan di: {model_path}")
+        return None
+
+    print(f"[INFO] Sedang memuat model dari: {os.path.basename(model_path)} ...")
+
+    # === Strategi 1: Load langsung dengan custom_objects ===
+    try:
+        model = keras.models.load_model(
+            model_path,
+            custom_objects=CUSTOM_OBJECTS,
+            compile=False,
+            safe_mode=False,
+        )
+        print("[OK] Model berhasil dimuat (strategi 1)")
+        return model
+    except Exception as e1:
+        print(f"[WARN] Strategi 1 gagal: {type(e1).__name__}: {e1}")
+
+    # === Strategi 2: Patch JSON di dalam ZIP lalu load ===
+    try:
+        print("[INFO] Mencoba strategi 2: patch JSON di dalam file .keras ...")
+        with tempfile.TemporaryDirectory() as tmpdir:
+            patched = os.path.join(tmpdir, "model_patched.keras")
+            _patch_keras_zip(model_path, patched)
+
             model = keras.models.load_model(
-                model_path,
-                custom_objects={
-                    "Dense": SafeDense,
-                    "InputLayer": SafeInputLayer,
-                    "Lambda": SafeLambda
-                },
+                patched,
+                custom_objects=CUSTOM_OBJECTS,
                 compile=False,
-                safe_mode=False
+                safe_mode=False,
             )
-            print("✅ Model MobileNet berhasil dimuat")
-            return model
-        except Exception as e:
-            print(f"❌ Gagal memuat model: {e}")
-            return None
-    else:
-        print(f"❌ File model tidak ditemukan di: {model_path}")
+        print("[OK] Model berhasil dimuat (strategi 2 - JSON patch)")
+        return model
+    except Exception as e2:
+        print(f"[ERROR] Strategi 2 juga gagal: {type(e2).__name__}: {e2}")
         return None

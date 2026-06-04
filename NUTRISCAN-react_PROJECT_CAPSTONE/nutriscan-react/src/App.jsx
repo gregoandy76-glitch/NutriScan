@@ -11,9 +11,16 @@ import Beranda from './pages/Beranda';
 import ScanKamera from './pages/ScanKamera';
 import Dashboard from './pages/Dashboard';
 
+// ===== SVG ICON MAP UNTUK TOAST =====
+const AppToastIcons = {
+    success: <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>,
+    warning: <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>,
+    error:   <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>,
+    info:    <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>,
+};
+
 // ===== KOMPONEN TOAST NOTIFICATION LOKAL =====
 function AppToast({ toasts, removeToast }) {
-    const iconMap  = { success: '✅', warning: '⚠️', error: '❌', info: '📡' };
     const colorMap = {
         success: 'bg-emerald-600 border-emerald-500',
         warning: 'bg-amber-500  border-amber-400',
@@ -28,12 +35,14 @@ function AppToast({ toasts, removeToast }) {
                     className={`flex items-start gap-3 text-white text-xs font-medium px-4 py-3 rounded-2xl shadow-xl border pointer-events-auto max-w-xs animate-fade-in ${colorMap[t.type]}`}
                     style={{ minWidth: '240px' }}
                 >
-                    <span className="text-base shrink-0 mt-0.5">{iconMap[t.type]}</span>
+                    <span className="shrink-0 mt-0.5">{AppToastIcons[t.type]}</span>
                     <div className="flex-1 leading-relaxed">{t.message}</div>
                     <button
                         onClick={() => removeToast(t.id)}
-                        className="shrink-0 opacity-60 hover:opacity-100 text-white font-bold text-sm leading-none cursor-pointer ml-1"
-                    >✕</button>
+                        className="shrink-0 opacity-60 hover:opacity-100 text-white leading-none cursor-pointer ml-1"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    </button>
                 </div>
             ))}
         </div>
@@ -214,7 +223,9 @@ export default function App() {
       {showPrivacyModal && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center z-50 p-4">
           <div className="bg-white p-6 rounded-2xl max-w-sm w-full text-center shadow-xl border border-slate-100 animate-scale-in">
-            <div className="text-3xl mb-3">🛡️</div>
+            <div className="w-14 h-14 rounded-2xl bg-emerald-50 border border-emerald-100 flex items-center justify-center mx-auto mb-4">
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-7 h-7 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </div>
             <h4 className="text-base font-bold text-slate-900 mb-2">Deklarasi Izin Akses Galeri</h4>
             <p className="text-slate-500 text-xs leading-relaxed mb-6">
               Sesuai standar perlindungan data kesehatan privasi, sistem NutriScan hanya akan memproses berkas gambar tabel nilai gizi yang Anda pilih secara sadar untuk dianalisis dan tidak merekam data media lainnya.

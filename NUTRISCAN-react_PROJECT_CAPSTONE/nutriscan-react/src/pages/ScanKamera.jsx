@@ -2,9 +2,16 @@ import React, { useState, useCallback } from 'react';
 
 const OCR_API_URL = "http://localhost:5000/api/ocr";
 
+// SVG icon helper untuk Toast
+const ToastIcons = {
+    success: <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>,
+    warning: <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>,
+    error:   <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>,
+    info:    <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>,
+};
+
 // ===== KOMPONEN TOAST NOTIFICATION =====
 function Toast({ toasts, removeToast }) {
-    const iconMap  = { success: '✅', warning: '⚠️', error: '❌', info: '📡' };
     const colorMap = {
         success: 'bg-emerald-600 border-emerald-500',
         warning: 'bg-amber-500  border-amber-400',
@@ -19,12 +26,14 @@ function Toast({ toasts, removeToast }) {
                     className={`flex items-start gap-3 text-white text-xs font-medium px-4 py-3 rounded-2xl shadow-xl border pointer-events-auto max-w-xs animate-fade-in ${colorMap[t.type]}`}
                     style={{ minWidth: '240px' }}
                 >
-                    <span className="text-base shrink-0 mt-0.5">{iconMap[t.type]}</span>
+                    <span className="shrink-0 mt-0.5">{ToastIcons[t.type]}</span>
                     <div className="flex-1 leading-relaxed">{t.message}</div>
                     <button
                         onClick={() => removeToast(t.id)}
-                        className="shrink-0 opacity-60 hover:opacity-100 text-white font-bold text-sm leading-none cursor-pointer ml-1"
-                    >✕</button>
+                        className="shrink-0 opacity-60 hover:opacity-100 text-white leading-none cursor-pointer ml-1"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    </button>
                 </div>
             ))}
         </div>
@@ -165,19 +174,19 @@ export default function ScanKamera({ productName, setProductName, handleAnalysis
                     <div className="grid grid-cols-3 divide-x divide-slate-100">
                         <div className="flex flex-col items-center text-center px-2 group cursor-default">
                             <div className="w-10 h-10 rounded-full bg-[#e6f4ef] flex items-center justify-center text-[#0f8c5b] mb-3 group-hover:scale-110 transition-transform">
-                                <span className="text-sm">📄</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
                             </div>
                             <span className="text-xs font-bold text-slate-800">1. Upload<br/>Label</span>
                         </div>
                         <div className="flex flex-col items-center text-center px-2 group cursor-default">
                             <div className="w-10 h-10 rounded-full bg-[#e6f4ef] flex items-center justify-center text-[#0f8c5b] mb-3 group-hover:scale-110 transition-transform">
-                                <span className="text-sm">⌨️</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M6 8h.01M10 8h.01M14 8h.01M18 8h.01M8 12h.01M12 12h.01M16 12h.01M7 16h10"/></svg>
                             </div>
                             <span className="text-xs font-bold text-slate-800">2. Input<br/>Produk</span>
                         </div>
                         <div className="flex flex-col items-center text-center px-2 group cursor-default">
                             <div className="w-10 h-10 rounded-full bg-[#e6f4ef] flex items-center justify-center text-[#0f8c5b] mb-3 group-hover:scale-110 transition-transform">
-                                <span className="text-sm">📊</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
                             </div>
                             <span className="text-xs font-bold text-slate-800">3. Lihat Hasil</span>
                         </div>
@@ -245,7 +254,17 @@ export default function ScanKamera({ productName, setProductName, handleAnalysis
                             : "bg-[#0f8c5b] hover:bg-[#0b6a45] text-white cursor-pointer"
                     }`}
                 >
-                    {isLoading ? "⏳ Memproses OCR..." : <>Analisis Kandungan Nutrisi 🔍</>}
+                    {isLoading ? (
+                        <>
+                            <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+                            Memproses OCR...
+                        </>
+                    ) : (
+                        <>
+                            <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                            Analisis Kandungan Nutrisi
+                        </>
+                    )}
                 </button>
             </section>
 
@@ -258,16 +277,38 @@ export default function ScanKamera({ productName, setProductName, handleAnalysis
                     </h3>
                 </div>
 
-                <div className="w-full aspect-video bg-[#2a303c] rounded-2xl overflow-hidden relative mb-8 shadow-inner">
+                <div className="w-full aspect-video bg-[#2a303c] rounded-2xl overflow-hidden relative mb-4 shadow-inner">
                     {croppedImage ? (
-                        <img src={croppedImage} alt="Cropped Nutrition Facts" className="w-full h-full object-contain bg-black" />
+                        <>
+                            <img src={croppedImage} alt="Cropped Nutrition Facts" className="w-full h-full object-contain bg-black" />
+                            {/* Tombol Retake / Hapus Gambar */}
+                            <button
+                                onClick={() => { setCroppedImage(null); setOcrResult(null); setOcrData(null); }}
+                                className="absolute top-3 right-3 bg-rose-600/90 hover:bg-rose-700 text-white rounded-xl px-3 py-1.5 text-xs font-bold flex items-center gap-1.5 shadow-lg backdrop-blur-sm transition-all hover:scale-105 cursor-pointer"
+                                title="Hapus gambar dan ulangi"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.51"/></svg>
+                                Ulangi
+                            </button>
+                        </>
                     ) : (
                         <>
                             <video ref={videoRef} autoPlay playsInline className="w-full h-full object-cover opacity-90"></video>
                             <div className="absolute inset-8 border-2 border-dashed border-emerald-400 rounded-xl pointer-events-none opacity-40 animate-pulse"></div>
+                            {/* Label petunjuk */}
+                            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 bg-black/50 text-white text-[10px] px-3 py-1 rounded-full backdrop-blur-sm pointer-events-none">
+                                Arahkan kamera ke label nutrisi
+                            </div>
                         </>
                     )}
                 </div>
+                {/* Info status gambar */}
+                {croppedImage && (
+                    <div className="w-full mb-4 bg-emerald-50 border border-emerald-200 rounded-xl px-3 py-2.5 flex items-start sm:items-center gap-2.5 text-xs text-emerald-700 font-medium">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 shrink-0 mt-0.5 sm:mt-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                        <span className="leading-snug">Gambar berhasil dipindai. Klik <strong>Ulangi</strong> untuk mengganti foto.</span>
+                    </div>
+                )}
 
                 <input type="file" ref={fileInputRef} onChange={handleFileChange} accept="image/*" className="hidden" />
 
@@ -281,17 +322,26 @@ export default function ScanKamera({ productName, setProductName, handleAnalysis
                                 : "bg-[#0f8c5b] hover:bg-[#0b6a45] cursor-pointer"
                         }`}
                     >
-                        <span>📸</span> {isLoading ? "Loading..." : "Ambil Foto"}
+                        {isLoading ? (
+                            <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+                        ) : (
+                            <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                        )}
+                        {isLoading ? "Memproses..." : "Ambil Foto"}
                     </button>
                     <button
                         onClick={() => fileInputRef.current?.click()}
                         disabled={isLoading}
                         className="btn-press w-1/2 bg-white border-2 border-[#0f8c5b] text-[#0f8c5b] hover:bg-[#f1fcf8] text-sm font-bold py-3.5 px-4 rounded-xl transition cursor-pointer text-center flex items-center justify-center gap-2 disabled:border-slate-300 disabled:text-slate-400 disabled:bg-slate-50 disabled:cursor-not-allowed"
                     >
-                        <span>🖼️</span> Pilih dari Galeri
+                        <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                        Pilih dari Galeri
                     </button>
                 </div>
-                <p className="text-slate-500 text-[11px] text-center mt-2 flex items-center justify-center gap-1.5"><span>🔒</span> Data privasi Anda aman &amp; diproses oleh AI OCR lokal.</p>
+                <p className="text-slate-500 text-[11px] text-center mt-2 flex items-center justify-center gap-1.5">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="w-3 h-3 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                    Data privasi Anda aman &amp; diproses oleh AI OCR lokal.
+                </p>
             </section>
         </main>
         </>
