@@ -8,6 +8,16 @@ const pool = new Pool({
     user:     process.env.DB_USER     || 'postgres',
     // Gunakan null jika password kosong agar pg tidak error SASL
     password: process.env.DB_PASSWORD || null,
+    // Mencegah koneksi idle yang terputus crash server
+    keepAlive: true,
+    idleTimeoutMillis: 30000,
+    connectionTimeoutMillis: 2000,
+});
+
+// Handle error pada koneksi idle agar server tidak crash
+pool.on('error', (err, client) => {
+    console.error('⚠️ Koneksi PostgreSQL terputus (idle):', err.message);
+    // Tidak throw error — biarkan pool reconnect otomatis
 });
 
 pool.connect()
